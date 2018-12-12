@@ -1,0 +1,26 @@
+MVC example
+  model has a, b, c
+  view has label::entry for a, b, c
+  controller owns both
+ 
+JSON config files
+  Create window from JSON config (title, dimensions)
+
+Dynamic widget creation
+  Derived frame with dynamically allocated label::entry
+  access entry values by name
+  
+Treeview manipulation
+  reorder items in treeview with buttons (drag-drop!)
+  maintain listbox with detached items
+  reattach items from listbox
+  add item
+  remove item
+  
+ITG
+	Load template to treeview
+		Select item and retrieve item info
+		Select item and display elsewhere
+		Select item and change properties
+	Load template to label:: entry stack
+	Load item to label::entry stack
