@@ -17,6 +17,11 @@ Treeview manipulation
   add item
   remove item
   
+Treeview detach
+  "active" treeview
+  "detached" treeview
+  move from one to the other
+  
 ITG
 	Load template to treeview
 		Select item and retrieve item info
