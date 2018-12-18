@@ -94,6 +94,11 @@ class TreeFrame(tk.Frame):
                 parent = values[0]
                 index = values[1]
 
+                #if parent is in detached_tree: 
+                    #log.warning('Cannot re-attach child while parent is detached.')
+                    #continue
+                #else:
+
                 self.main_tree.move(item_id, parent, index)
                 self.detached_tree.delete(i)
 
