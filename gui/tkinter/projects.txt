@@ -17,10 +17,7 @@ Treeview manipulation
   add item
   remove item
   
-Treeview detach
-  "active" treeview
-  "detached" treeview
-  move from one to the other
+Treeview Values Editor
   
 ITG
 	Load template to treeview
