@@ -10,14 +10,6 @@ Dynamic widget creation
   Derived frame with dynamically allocated label::entry
   access entry values by name
   
-Treeview manipulation
-  reorder items in treeview with buttons (drag-drop!)
-  maintain listbox with detached items
-  reattach items from listbox
-  add item
-  remove item
-  
-Treeview Values Editor
   
 ITG
 	Load template to treeview
@@ -26,3 +18,5 @@ ITG
 		Select item and change properties
 	Load template to label:: entry stack
 	Load item to label::entry stack
+	
+PDF metadata
