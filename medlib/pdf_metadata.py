@@ -29,12 +29,16 @@ def pdf_info(pdf_path):
     page_mode = pdf.getPageMode()
     first_page = pdf.getPage(0)
     first_page_content = first_page.extractText()
+    last_page = pdf.getPage(page_count-1)
+    last_page_content = last_page.extractText()
     title = pdf.getDocumentInfo().title
     
     log.info(f'Page count: {page_count}')
     log.info(f'Page mode: {page_mode}')
     log.info(f'Title: {title}')
     log.info(f'First page content: \n{first_page_content}')
+    print('')
+    log.info(f'Last page content:  \n{last_page_content}')
 
     # metadata extraction
     m_title = pdf.getXmpMetadata().dc_title
@@ -52,3 +56,4 @@ def pdf_info(pdf_path):
 if __name__ == '__main__':
 
     print('You should probably do something here.')
+    pdf_info('samples/PIR_2010.pdf')
