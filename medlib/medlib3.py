@@ -1,20 +1,23 @@
+import logging
+logging.basicConfig(level=logging.CRITICAL, format='%(levelname)-9s: %(name)s : %(funcName)s() : %(message)s')
+log = logging.getLogger('medlib3')
+log.setLevel(logging.DEBUG)
+
 import tkinter as tk
 from tkinter import ttk
 from tkinter import filedialog
 
-import logging
-logging.basicConfig(level=logging.CRITICAL, format='%(levelname)-9s: %(name)s : %(funcName)s() : %(message)s')
-log = logging.getLogger('medlib_basic')
-log.setLevel(logging.DEBUG)
-
 import os
-
+import threading
+from pdf_get_doi import *
 
 class DirBrowser(tk.Frame):
     
     def __init__(self, parent):
         super().__init__(parent)
-        
+        self.parent = parent
+        self.path = os.getcwd()
+
         self.setup_tree()
 
 
@@ -33,9 +36,10 @@ class DirBrowser(tk.Frame):
         self.tree.heading('status', text='Status', anchor='w')
         self.tree.column('status', stretch=0, width=100)
 
-        self.populate_roots(self.tree)
+        self.populate()
+        #self.populate_roots(self.tree)
         
-        self.tree.bind('<<TreeviewOpen>>', self.update_tree)
+        #self.tree.bind('<<TreeviewOpen>>', self.update_tree)
         self.tree.bind('<<TreeviewSelect>>', self.on_select)
         self.tree.bind('<Double-Button-1>', self.on_dblclick)
         self.tree.bind('<Button-3>', self.on_rclick)
@@ -49,10 +53,33 @@ class DirBrowser(tk.Frame):
 
 
     def change_dir(self, new_path):
-        if os.path.isdir(new_path):
-            os.chdir(new_path)
-            self.tree.delete(self.tree.get_children(''))
-            self.populate_roots(self.tree)
+        self.path = new_path
+        self.populate()
+        #if os.path.isdir(new_path):
+        #    os.chdir(new_path)
+        #    self.tree.delete(*self.tree.get_children())
+        #    self.populate_roots(self.tree)
+
+    def populate(self):
+        # clear the existing tree
+        self.tree.delete(*self.tree.get_children())
+
+        for directory, subdir_list, file_list in os.walk(self.path):
+            # Do this when a (sub)directory is encountered
+            node = self.tree.insert('', 'end', text=directory)
+            self.tree.set(node, 'fullpath', directory)
+            #print(self.tree.set(node, 'fullpath'))
+            
+            for file in file_list: # for the current directory
+                #print(file)
+                #filename = os.fsdecode(file)
+                #file_path = os.path.join(subdir, filename)
+
+                if file.endswith('.pdf'): 
+                    pdf_path = os.path.join(directory, file)
+                    pdf_node = self.tree.insert(node, 'end', text=file)
+                    self.tree.set(pdf_node, 'fullpath', pdf_path)
+                    #print(self.tree.set(pdf_node, 'fullpath'))
 
 
     def populate_tree(self, tree, node):
@@ -118,8 +145,14 @@ class DirBrowser(tk.Frame):
 
     def on_dblclick(self, event):
         # process the selected file or directory
-        log.info('')
-        pass
+        # pass the info to the main gui to process on a different thread?
+        # basically it gets the DOI, then starts and stops the progressbar
+        selected = self.tree.selection()[0]
+        path = self.tree.set(selected, 'fullpath')
+        #self.parent.start_progress()
+        doi = get_doi(path)
+        #self.parent.stop_progress()
+        log.info(f'{path}:  {doi}')
 
 
     def on_rclick(self, event):
@@ -132,10 +165,6 @@ class DirBrowser(tk.Frame):
             tree.item(tree.get_children()[0], open=True)
         else: # mouse pointer not over item; no action required
             pass
-
-
-
-
 
 
 
@@ -201,6 +230,18 @@ class MedLibFrame(tk.Frame):
         tk.Button(self, text='Export', command=self.on_btn_export_more_doi).grid(row=4, column=1)
         tk.Button(self, text='Export', command=self.on_btn_export_doi).grid(row=4, column=3)
 
+        # row 5 / status bar
+        #self.statusbar = tk.Label(self, text='Status').grid(row=5, columnspan=4)
+        self.progress = ttk.Progressbar(self, orient="horizontal", mode="indeterminate")
+        self.progress.grid(row=5, columnspan=4, sticky=tk.E)
+
+    def start_progress(self):
+        log.info('')
+        self.progress.start()
+
+    def stop_progress(self):
+        log.info('')
+        self.progress.stop()
 
     def on_btn_load(self):
         result = tk.filedialog.askdirectory(initialdir = "/",title = "Select directory")
@@ -224,3 +265,5 @@ if __name__ == '__main__':
     medlib.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
     master.mainloop()
+    
+    
