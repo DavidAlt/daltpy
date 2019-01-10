@@ -190,3 +190,5 @@ medlib/samples/PIR_2010.pdf
 medlib/samples/PIR_2016.pdf
 medlib/samples/PPT.pdf
 medlib/samples/UTDPrintout_2018.pdf
+*.pdf
+medlib/doi.txt
