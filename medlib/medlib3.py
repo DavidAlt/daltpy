@@ -296,7 +296,11 @@ class MedLibFrame(tk.Frame):
             path = self.doi_tree.set(child, 'fullpath')
             name = self.doi_tree.item(child)['text']
             doi = self.doi_tree.set(child, 'doi')
-            f.write(f'{path}\t{name}\t{doi}\n')
+            #f.write(f'{path}\t{name}\t{doi}\n')
+            f.write('TY  - JOUR\n')
+            f.write(f'TI  - {name}\n')
+            f.write(f'DO  - {doi}\n')
+            f.write('ER  -\n')
             
         f.close()
         
