@@ -181,6 +181,9 @@ fabric.properties
 
 # Android studio 3.1+ serialized cache file
 .idea/caches/build_file_checksums.ser
+
+# DALT - Custom added
+medlib/samples/
 medlib/samples/AAP_2015.pdf
 medlib/samples/NEJM_2015.pdf
 medlib/samples/NEO_2016.pdf
@@ -193,3 +196,6 @@ medlib/samples/UTDPrintout_2018.pdf
 *.pdf
 medlib/doi.txt
 medlib/adolescent.txt
+
+# DALT - Custom added
+builds/
