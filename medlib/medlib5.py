@@ -5,7 +5,7 @@ log = logging.getLogger('medlib3')
 log.setLevel(logging.DEBUG)
 
 # For user interface
-import os, threading, queue
+import os, threading, queue, time
 import tkinter as tk
 from tkinter import ttk, filedialog
 
@@ -111,6 +111,45 @@ class ScrollTree(tk.Frame):
 
 
 
+class NodeWorker(threading.Thread):
+    def __init__(self, q, tree_q, *args, **kwargs):
+        self.q = q
+        self.tree_q = tree_q
+        super().__init__(*args, **kwargs)
+    
+    def run(self):
+        while True:
+            try:
+                node = self.q.get(timeout=3)  # 3s timeout
+            except queue.Empty:
+                return
+            
+            # Do the work
+            node_id = node[0]
+            node_name = node[1]
+            path = node[2]
+            filename = os.path.basename(path)
+            
+            dois = extract_doi(path)
+
+            if dois: 
+                if len(dois) == 1: # only 1 DOI
+                    doi = min(dois)
+                    result = {'origin_id': node_id, 'target': 'doi_tree', 'text': filename, 'path': path, 'info': doi}
+                    self.tree_q.put(result)
+                    
+                else: # more than 1 DOI
+                    result = {'origin_id': node_id, 'target': 'more_doi_tree', 'text': filename, 'path': path, 'info': dois}
+                    self.tree_q.put(result)
+
+            else: # no DOIs
+                result = {'origin_id': node_id, 'target': 'no_doi_tree', 'text': filename, 'path': path, 'info': ''}
+                self.tree_q.put(result)
+
+            self.q.task_done()
+
+
+
 class MedLib():
 
     def __init__(self):
@@ -126,9 +165,10 @@ class MedLib():
         self.setup_workspace(self.master)
         self.setup_statusbar(self.master)
 
-        # setup queue and start listening
+        # setup queues and start listening
         self.q = queue.Queue()
-        self.master.after(100, self.listen_for_result)
+        self.tree_update_queue = queue.Queue()
+        self.master.after(100, self.update_trees)
         
         # start the UI loop
         self.master.mainloop()
@@ -152,7 +192,7 @@ class MedLib():
         self.dir_tree_frame.pack(fill=tk.BOTH, expand=True)
         self.dir_tree = self.dir_tree_frame.tree
         self.dir_tree.column('info', minwidth=40, width=120, stretch=tk.NO)
-        self.dir_tree.bind('<Double-Button-1>', self.on_dir_tree_dblclick)
+        #self.dir_tree.bind('<Double-Button-1>', self.on_dir_tree_dblclick)
         
         self.doi_tree_frame = ScrollTree(workspace, 'File', 'DOI')
         self.doi_tree_frame.pack(fill=tk.BOTH, expand=True)
@@ -229,8 +269,49 @@ class MedLib():
             self.populate_dir_tree()
         
     def on_process(self):
-        t = threading.Thread(target=self.process_selected)
-        t.start()
+        # Start the timer
+        start = timer()
+        self.status.config(text='  Status:  WORKING ...')
+        self.elapsed.config(text=f'Elapsed:  WORKING ...')
+        self.master.update()
+
+        # Populate the queue from the selected items
+        if self.dir_tree.selection():
+            for node in self.dir_tree.selection():
+                if self.dir_tree.get_children(node):
+                    for child in self.dir_tree.get_children(node):
+                        node_id = child
+                        node_name = self.dir_tree.item(child)['text']
+                        node_path = self.dir_tree.set(child, 'fullpath')
+                        self.q.put((node_id, node_name, node_path))
+                else: 
+                    node_id = node
+                    node_name = self.dir_tree.item(node)['text']
+                    node_path = self.dir_tree.set(node, 'fullpath')
+                    self.q.put((node_id, node_name, node_path))
+
+        # Start the worker threads
+        items_in_queue = len(list(self.q.queue))
+        if items_in_queue <= 100:
+            num_workers = items_in_queue
+        else:
+            num_workers = 100 # hard cap of 100
+        log.info(f'Number of threads for current batch: {num_workers}')
+
+        # start the workers
+        for i in range(num_workers):
+            NodeWorker(self.q, self.tree_update_queue).start()
+
+        # Block until the queue is empty/work done; this freezes the GUI
+        # Omitting it lets you interact with the GUI, but messes up timer
+        self.q.join() 
+
+        # Finish the timer
+        self.status.config(text='  Status:  IDLE')
+        self.master.update()
+        end = timer()
+        elapsed = format_elapsed_time(end-start)
+        self.elapsed.config(text=f'Elapsed:  {elapsed}  ')
 
     def on_reset(self):
         self.dir_tree.delete(*self.dir_tree.get_children())
@@ -300,72 +381,32 @@ class MedLib():
             f.write(f'  {name}\t{basedir}\n'.expandtabs(40))
         f.write('\n')
 
-
-    ###### OTHER EVENTS ######
-    def on_dir_tree_dblclick(self, event):
-        selected = self.dir_tree.selection()[0]
-        self.dir_tree.item(selected, open=True)
-
-        if selected:
-            t = threading.Thread(target=self.process_selected)
-            t.start()
-
-
-    ###### FUNCTIONS NEEDING THREADING ######
-    def process_selected(self):
-        if self.dir_tree.selection():
-            start = timer()
-            self.status.config(text='  Status:  WORKING ...')
-            self.elapsed.config(text=f'Elapsed:  WORKING ...')
-            self.master.update()
-
-            for node in self.dir_tree.selection():
-                if self.dir_tree.get_children(node):
-                    for child in self.dir_tree.get_children(node):
-                        self.process_node(child)
-                else: 
-                    self.process_node(node)
-            
-            self.status.config(text='  Status:  IDLE')
-            self.master.update()
-            end = timer()
-            elapsed = format_elapsed_time(end-start)
-            self.elapsed.config(text=f'Elapsed:  {elapsed}  ')
-            
-            # TODO: if nothing left to process, empty the tree
-
-    def process_node(self, node):
-        path = self.dir_tree.set(node, 'fullpath')
-        filename = os.path.basename(path)
-        dois = extract_doi(path)
-
-        if dois: 
-            if len(dois) == 1: # only 1 DOI
-                self.dir_tree.set(node, 'info', 'processing ...')   
-                self.master.update()
-
-                doi = min(dois)
-                self.doi_tree.insert(text=filename, parent='', index='end', values=(path, doi))
-                
-            else: # more than 1 DOI
-                self.more_doi_tree.insert(text=filename, parent='', index='end', values=(path, dois))
-
-            self.dir_tree.set(node, 'info', 'complete')
-
-        else: # no DOIs
-            self.no_doi_tree.insert(text=filename, parent='', index='end', values=(path, path))
-        
-        self.dir_tree.detach(node)
-        self.update_dir_tree_counts()
-
-    def listen_for_result(self):
+    def update_trees(self):
+        # This loop checks the queue for messages every 100 milliseconds
         try: 
             # update UI based on results
-            result = self.q.get(0)
-            self.elapsed['text'] = f'Elapsed:  {result}'
-            self.master.after(100, self.listen_for_result)
+            result = self.tree_update_queue.get(0)
+            origin_id = result['origin_id']
+            target_tree = result['target']
+            target_text = result['text']
+            target_path = result['path']
+            target_info = result['info']
+            #log.info(f'updating tree: {origin_id}, {target_tree}, {target_text}, {target_path}, {target_info}')
+
+            if target_tree == 'doi_tree':
+                self.doi_tree.insert(text=target_text, parent='', index='end', values=(target_path, target_info))
+            elif target_tree == 'more_doi_tree':
+                self.more_doi_tree.insert(text=target_text, parent='', index='end', values=(target_path, target_info))
+            elif target_tree == 'no_doi_tree':
+                self.no_doi_tree.insert(text=target_text, parent='', index='end', values=(target_path, target_path))
+
+            self.dir_tree.detach(origin_id)
+            self.update_dir_tree_counts()
+
+            self.master.after(100, self.update_trees)
+
         except queue.Empty:
-            self.master.after(100, self.listen_for_result)
+            self.master.after(100, self.update_trees)
 
 
 
