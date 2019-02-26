@@ -1,0 +1,18 @@
+{
+	"folders": [
+		{
+			"path": "gui\\PySide2"
+		},
+		{
+			"path": "gui\\tkinter"
+		}
+	],
+	"settings": {
+		//"python.pythonPath": "C:\\Users\\david\\Anaconda3\\envs\\gui\\python.exe",
+		"pyside2-vsc.designer-creator.path": "c:\\Users\\david\\Anaconda3\\Library\\bin\\designer.exe",
+    	"pyside2-vsc.rcc.cmd": "C:\\Users\\david\\Anaconda3\\envs\\gui\\Scripts\\pyside2-rcc.exe",
+		"pyside2-vsc.uic.cmd": "C:\\Users\\david\\Anaconda3\\envs\\gui\\Scripts\\pyside2-uic.exe",
+
+	}
+	
+}

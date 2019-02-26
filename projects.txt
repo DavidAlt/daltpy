@@ -5,6 +5,11 @@ MVC example
  
 JSON config files
   Create window from JSON config (title, dimensions)
+  
+NoSQL database manipulation
+  View tables
+  Add/Remove/Update records
+  Calculations based on record retrieval
 
 Dynamic widget creation
   Derived frame with dynamically allocated label::entry
@@ -19,4 +24,3 @@ ITG
 	Load template to label:: entry stack
 	Load item to label::entry stack
 	
-PDF metadata

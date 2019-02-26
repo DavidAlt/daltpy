@@ -1,3 +1,6 @@
+# This version uses map and pool for multithreading
+from multiprocessing.dummy import Pool as ThreadPool
+
 # For logging
 import logging
 logging.basicConfig(level=logging.CRITICAL, format='%(levelname)-9s: %(name)s : %(funcName)s() : %(message)s')
@@ -20,15 +23,6 @@ from pdfminer.pdfpage import PDFPage
 from pdfminer.layout import LAParams
 from io import StringIO
 import re
-
-
-# TODO: Threading / Queue
-#   Not sure if the whole queue/listening bit is actually used
-#   Implement multiple worker threads with queue to speed processing
-# TODO: Report building
-#   More robust logging (elapsed per file, per batch, total)
-#   use hidden time column in trees 
-# TODO: Right-click context menu to open file/folder at file location
 
 
 ###### HELPER FUNCTIONS ######
@@ -63,23 +57,48 @@ def convert_pdf_to_text(path):
     except Exception as ex:
         log.error(f'Exception of type {type(ex).__name__} thrown on: {path}')
         pass
-
+        # PDFPasswordIncorrect
 
 def extract_doi(path):
+    # Look into limiting what goes in the try block
     pdf = convert_pdf_to_text(path)
     regx = r'\b(10[.][0-9]{4,}(?:[.][0-9]+)*/(?:(?!["&\'<>])\S)+)\b'
-    all_doi = re.findall(regx, pdf)
-    unique = set(all_doi)
-    if not unique:
-        return False
-    else:
-        return unique
+    try:
+        all_doi = re.findall(regx, pdf)
+        unique = set(all_doi)
+        if not unique:
+            return False
+        else:
+            return unique
+    except Exception as ex:
+        log.error(f'Exception of type {type(ex).__name__} thrown on: {path}')
+        pass
+
+
 
 def format_elapsed_time(t):
         return "%d:%02d:%02d.%03d" % \
             reduce(lambda ll,b : divmod(ll[0],b) + ll[1:],
                 [(t*1000,),1000,60,60])
 
+def process_node(node):
+    node_id = node[0]
+    node_name = node[1]
+    path = node[2]
+    filename = os.path.basename(path)
+    
+    dois = extract_doi(path)
+
+    if dois: 
+        if len(dois) == 1: # only 1 DOI
+            doi = min(dois)
+            result = {'origin_id': node_id, 'target': 'doi_tree', 'text': filename, 'path': path, 'info': doi}
+        else: # more than 1 DOI
+            result = {'origin_id': node_id, 'target': 'more_doi_tree', 'text': filename, 'path': path, 'info': dois}
+    else: # no DOIs
+        result = {'origin_id': node_id, 'target': 'no_doi_tree', 'text': filename, 'path': path, 'info': ''}
+
+    return result
 
 
 class ScrollTree(tk.Frame):
@@ -278,8 +297,11 @@ class MedLib():
             self.populate_dir_tree()
         
     def on_process(self):
+        # setup the data
+        node_queue = []
+
         # Start the timer
-        start = timer()
+        t1 = timer()
         self.status.config(text='  Status:  WORKING ...')
         self.elapsed.config(text=f'Elapsed:  WORKING ...')
         self.master.update()
@@ -292,15 +314,35 @@ class MedLib():
                         node_id = child
                         node_name = self.dir_tree.item(child)['text']
                         node_path = self.dir_tree.set(child, 'fullpath')
-                        self.q.put((node_id, node_name, node_path))
+                        #self.q.put((node_id, node_name, node_path))
+                        node_queue.append((node_id, node_name, node_path))
                 else: 
                     node_id = node
                     node_name = self.dir_tree.item(node)['text']
                     node_path = self.dir_tree.set(node, 'fullpath')
-                    self.q.put((node_id, node_name, node_path))
+                    #self.q.put((node_id, node_name, node_path))
+                    node_queue.append((node_id, node_name, node_path))
 
+        num_workers = 100
+        pool = ThreadPool(num_workers)
+
+        results = pool.map(process_node, node_queue)
+        pool.close()
+        pool.join() # waits until ALL tasks are completed
+        # omitting .join() lets each process/thread run independently, 
+        # but will mess up the total time elapsed since it's no longer considering it as one process
+        
+        t2 = timer()
+        log.info(f'Total elapsed: {format_elapsed_time(t2-t1)}')
+        
+        # Do something with the results
+        
+        for result in results:
+            print(result)
+        
+        
         # Start the worker threads
-        items_in_queue = len(list(self.q.queue))
+        '''items_in_queue = len(list(self.q.queue))
         if items_in_queue <= 200:
             num_workers = items_in_queue
         else:
@@ -309,7 +351,7 @@ class MedLib():
 
         # start the workers
         for i in range(num_workers):
-            NodeWorker(self.q, self.tree_update_queue).start()
+            NodeWorker(self.q, self.tree_update_queue).start()'''
 
         # Block until the queue is empty/work done; this freezes the GUI
         # Omitting it lets you interact with the GUI, but messes up timer
@@ -318,8 +360,8 @@ class MedLib():
         # Finish the timer
         self.status.config(text='  Status:  IDLE')
         self.master.update()
-        end = timer()
-        elapsed = format_elapsed_time(end-start)
+        #end = timer()
+        elapsed = format_elapsed_time(t2-t1)
         self.elapsed.config(text=f'Elapsed:  {elapsed}  ')
 
     def on_reset(self):

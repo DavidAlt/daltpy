@@ -12,7 +12,7 @@ class Shell(QMainWindow):
         w = QWidget()
         
 		# Create and set the layout
-		grid = QGridLayout()
+        grid = QGridLayout()
 		w.setLayout(grid) # Set the layout of the main window content widget
         self.setCentralWidget(w)        
         

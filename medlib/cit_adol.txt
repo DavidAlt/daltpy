@@ -1,0 +1,164 @@
+TY  - JOUR
+TI  - Postural orthostatic tachycardia syndrome (POTS) and vitamin B12 deficiency (PED, 2013).pdf
+DO  - 10.1542/peds.2012-3427
+ER  -
+TY  - JOUR
+TI  - Military health care utilization by teens and young adults (PED, 2014).pdf
+DO  - 10.1542/peds.2013-1630
+ER  -
+TY  - JOUR
+TI  - Evaluating adolescents with fatigue (PIR, 2002).pdf
+DO  - 10.1542/pir.23-10-337
+ER  -
+TY  - JOUR
+TI  - Breast disorders in the adolescent patient (Adol, 2004).pdf
+DO  - 10.1016/j.admecli.2004.06.003
+ER  -
+TY  - JOUR
+TI  - Components and timing of prenatal care (OBGYN, 2008).pdf
+DO  - 10.1016/j.ogc.2008.06.002
+ER  -
+TY  - JOUR
+TI  - Vaginal wet mounts on asymptomatic adolescent females (J Ped Adol Gyn, 2008).pdf
+DO  - 10.1016/j.jpag.2008.02.009
+ER  -
+TY  - JOUR
+TI  - Comparison of female genitalia exams (Child Abuse Neglect, 2008).pdf
+DO  - 10.1016/j.chiabu.2007.06.004
+ER  -
+TY  - JOUR
+TI  - Gynecologic exam in adolescents (PED, 2010).pdf
+DO  - 10.1542/peds.2010-1564
+ER  -
+TY  - JOUR
+TI  - Abnormal vaginal bleeding in adolescents (PIR, 2007).pdf
+DO  - 10.1542/pir.28-5-175
+ER  -
+TY  - JOUR
+TI  - Dysmenorrhea (PIR, 2006).pdf
+DO  - 10.1542/pir.27-2-64
+ER  -
+TY  - JOUR
+TI  - Common gynecologic problems in prepubertal girls (PIR, 2006).pdf
+DO  - 10.1542/pir.27-6-213
+ER  -
+TY  - JOUR
+TI  - Menstruation using the menstrual cycle as a vital sign (PED, 2006).pdf
+DO  - 10.1542/peds.2006-2481
+ER  -
+TY  - JOUR
+TI  - Menstruation in adolescents (Ann NY Acad Sci, 2008).pdf
+DO  - 10.1196/annals.1429.022
+ER  -
+TY  - JOUR
+TI  - Menstrual disorders (PIR, 2013).pdf
+DO  - 10.1542/pir.34-1-6
+ER  -
+TY  - JOUR
+TI  - Management of dysfunctional uterine bleeding (OBGYN, 2008).pdf
+DO  - 10.1016/j.ogc.2008.03.001
+ER  -
+TY  - JOUR
+TI  - Naproxen or estradiol for bleeding and spotting.pdf
+DO  - 10.1016/j.ajog.2011.09.021
+ER  -
+TY  - JOUR
+TI  - Acute idiopathic scrotal edema (J Pediatr Surg, 2002).pdf
+DO  - 10.1053/jpsu.2002.34472
+ER  -
+TY  - JOUR
+TI  - Testicular masses and cancer (PIR, 2005).pdf
+DO  - 10.1542/pir.26-9-341
+ER  -
+TY  - JOUR
+TI  - Acute testicular disorders (PIR, 2008).pdf
+DO  - 10.1542/pir.29-7-235
+ER  -
+TY  - JOUR
+TI  - Scrotal swelling in children (PIR, 2000).pdf
+DO  - 10.1542/pir.21-9-311
+ER  -
+TY  - JOUR
+TI  - Health risk factors among detained adolescent females (Am J Prev Med, 2004).pdf
+DO  - 10.1016/j.amepre.2004.07.017
+ER  -
+TY  - JOUR
+TI  - Tobacco use - a pediatric disease (AAP, 2009).pdf
+DO  - 10.1542/peds.2009-2114
+ER  -
+TY  - JOUR
+TI  - Binge drinking (PED, 2015).pdf
+DO  - 10.1542/peds.2015-2337
+ER  -
+TY  - JOUR
+TI  - Physician advice to adolescents about drinking and other health behaviors (PEDS, 2013).pdf
+DO  - 10.1542/peds.2012-1496
+ER  -
+TY  - JOUR
+TI  - Exposure to alcohol advertisements and teen alcohol-related problems (PEDS, 2013).pdf
+DO  - 10.1542/peds.2012-1480
+ER  -
+TY  - JOUR
+TI  - Children can overdose on marijuana (PED, 2015).pdf
+DO  - 10.1542/aapnews.2015368-33d
+ER  -
+TY  - JOUR
+TI  - Adolescent use of MJ (Adol, 2006).pdf
+DO  - 10.1016/j.admecli.2006.03.008
+ER  -
+TY  - JOUR
+TI  - Drug abuse by adolescents - general considerations (PIR, 2009).pdf
+DO  - 10.1542/pir.30-3-83
+ER  -
+TY  - JOUR
+TI  - Testing for drugs of abuse in children and adolescents (PED, 2014).pdf
+DO  - 10.1542/peds.2014-0865
+ER  -
+TY  - JOUR
+TI  - Adolescent abuse of other drugs (Adol, 2006).pdf
+DO  - 10.1016/j.admecli.2006.03.007
+ER  -
+TY  - JOUR
+TI  - Energy drinks (PIR, 2013 - Blankson).pdf
+DO  - 10.1542/pir.34-2-55
+ER  -
+TY  - JOUR
+TI  - Performance enhancing drugs (PIR, 2012).pdf
+DO  - 10.1542/pir.33-6-265
+ER  -
+TY  - JOUR
+TI  - Popular ergogenic drugs and supplements in young athletes (PED, 2006).pdf
+DO  - 10.1542/peds.2005-1429
+ER  -
+TY  - JOUR
+TI  - The choking game - physician perspective (PED, 2010).pdf
+DO  - 10.1542/peds.2009-1287
+ER  -
+TY  - JOUR
+TI  - Adolescent sexuality (PIR, 2013).pdf
+DO  - 10.1542/pir.34-1-29
+ER  -
+TY  - JOUR
+TI  - The female athlete triad (PIR, 2006).pdf
+DO  - 10.1542/pir.27-1-e12
+ER  -
+TY  - JOUR
+TI  - Pre-participation examination of the adolescent athlete - part 1 (PIR, 2001).pdf
+DO  - 10.1542/pir.22-6-199
+ER  -
+TY  - JOUR
+TI  - Pre-participation cardiovascular assessment (PIR, 2006).pdf
+DO  - 10.1542/pir.27-11-418
+ER  -
+TY  - JOUR
+TI  - Cardiovascular pre-participation sports screening (PIR, 2006).pdf
+DO  - 10.1542/pir.27-11-418
+ER  -
+TY  - JOUR
+TI  - Athletic participation with hypertension (PED, 2010).pdf
+DO  - 10.1542/peds.2010-0658
+ER  -
+TY  - JOUR
+TI  - Medical conditions affecting sports participation (PED, 2008).pdf
+DO  - 10.1542/peds.2008-0080
+ER  -
