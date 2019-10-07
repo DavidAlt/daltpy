@@ -14,7 +14,8 @@ import logging
 # ======================================================================
 '''
 Developer:     David Alt, USAF (david.a.alt2.mil@mail.mil)
-Last updated:  5/1/2019
+Last updated:  5/9/2019
+Required packages: python3, pandas, xlrd, xlsxwriter
 
 INTENDED USE:
 This application generates the Behavioral Health Therapy Dosage report 
@@ -685,7 +686,7 @@ class BHTDApp():
         )
 
         # Output the report and patient lists to Excel
-        with pandas.ExcelWriter(report_name, datetime_format='M/d/yyyy') as writer:
+        with pandas.ExcelWriter(report_name, datetime_format='M/d/yyyy', engine='xlsxwriter') as writer:
             self.report.to_excel(writer, sheet_name='Report', startrow=3, startcol=0)
             worksheet = writer.sheets['Report']
             worksheet.write(0,0,'Start: ')

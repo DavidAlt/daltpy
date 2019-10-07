@@ -1,5 +1,5 @@
 MVC example
-  model has a, b, c
+  model has a, c
   view has label::entry for a, b, c
   controller owns both
  
@@ -18,9 +18,6 @@ Dynamic widget creation
   
 ITG
 	Load template to treeview
-		Select item and retrieve item info
-		Select item and display elsewhere
-		Select item and change properties
 	Load template to label:: entry stack
 	Load item to label::entry stack
 	
